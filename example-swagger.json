@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API REST - DESCRIPCIÓN PRUEBA DVALLADARES",
+    "version": "v1",
+    "title": "API REST - PRUEBA DVALLADARES",
+    "termsOfService": "http://www.testcompany.com/terms-and-conditions",
+    "contact": {
+      "name": "Diego Valladares",
+      "url": "http://www.lipigas.cl",
+      "email": "dvalladares@lipigas.cl"
+    },
+    "license": {
+      "name": "Lipigas",
+      "url": "http://www.testcompany.com/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "https://jsonplaceholder.typicode.com",
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+	"/posts": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Finds Pets by status",
+        "description": "Multiple status values can be provided with comma separated strings",
+        "operationId": "findPetsByStatus",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      }
+    },
+  }
+}

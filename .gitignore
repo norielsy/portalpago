@@ -1,0 +1,14 @@
+/vendor
+/node_modules
+.env
+/.idea/
+.idea/dataSources.local.xml
+.idea/dataSources.xml
+.idea/dataSources/
+.idea/inspectionProfiles/
+.idea/portalpago.iml
+bootstrap/cache/
+public/img/banner/
+.idea/workspace.xml
+#/public/admin/bower_components/
+.DS_Store

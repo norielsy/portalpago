@@ -1,0 +1,22 @@
+{
+  "name": "admin",
+  "authors": [
+    "José González <gonzalezmunozjosearmando@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "metisMenu": "metismenu#^2.7.2"
+  }
+}
