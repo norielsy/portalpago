@@ -95,7 +95,7 @@ class SendEmail
         );
 
         $a = Mail::queue('emails.email_bienvenida', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
+            $message->from('atencion@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
         });
 
