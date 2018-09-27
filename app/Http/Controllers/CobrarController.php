@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class CobrarController extends Controller
 {
@@ -185,12 +186,12 @@ class CobrarController extends Controller
             $activar_cobrar = 1;
             if (Session::get('idvista_cobrador') == 0) {
                 $nombre = Nominas::where('idUsuarios', Session::get('id'))
-                    ->where('idnominas', $id)
-                    ->select('empresa')->first();
+                ->where('idnominas', $id)
+                ->select('empresa')->first();
             } else {
                 $nombre = Nominas::where('idUsuarios', Session::get('rut_padre'))
-                    ->where('idnominas', $id)
-                    ->select('empresa')->first();
+                ->where('idnominas', $id)
+                ->select('empresa')->first();
             }
 
             if (!is_null($nombre)) {
@@ -313,26 +314,37 @@ class CobrarController extends Controller
         if (Session::get('idvista_cobrador') != 0) {
             $tabla_cobros->idUsuarios_hijo = Session::get('id');
         }
-        $tabla_cobros->save();
 
-        if (is_numeric($tabla_cobros->idCobros)) {
+        if((int) $tabla_cobros->monto <= 0){
+            return Redirect::back()->withErrors(['El monto debe ser mayor a 0']);
+        }else {
+            $date = Carbon::now();
 
-            $codigo_banco = Extras\Utilidades::generar_id_unico("co", $tabla_cobros->idCobros);
-            Cobros::update_idunico_pago($tabla_cobros->idCobros, $codigo_banco);
-            if ($request->hasFile('voucher')) {
-                $file = $request->file('voucher');
-                $nombre_archivo = $tabla_cobros->idCobros . "_voucher_individual." . $file->getClientOriginalExtension();
-                $file->move(
-                    base_path() . '/public/images/voucher/', $nombre_archivo
-                );
-                $archivo = '/public/images/voucher/' . $nombre_archivo;
+            if($date > $tabla_cobros->fecha_vencimiento){
+                return Redirect::back()->withErrors(['Fecha de vencimiento invalida']);
+            }else{
+                $tabla_cobros->save();
+
+                if (is_numeric($tabla_cobros->idCobros)) {
+
+                    $codigo_banco = Extras\Utilidades::generar_id_unico("co", $tabla_cobros->idCobros);
+                    Cobros::update_idunico_pago($tabla_cobros->idCobros, $codigo_banco);
+                    if ($request->hasFile('voucher')) {
+                        $file = $request->file('voucher');
+                        $nombre_archivo = $tabla_cobros->idCobros . "_voucher_individual." . $file->getClientOriginalExtension();
+                        $file->move(
+                            base_path() . '/public/images/voucher/', $nombre_archivo
+                        );
+                        $archivo = '/public/images/voucher/' . $nombre_archivo;
+                    }
+                    $archivo = !empty($archivo) ? $archivo : null;
+                    Extras\SendEmail::aviso_nuevo_cobro($request->input('email'), Session::get('nombre'), Session::get('id'), $fecha_vencimiento, $empresa, $archivo, $tabla_cobros->idCobros, $datos_deudor, $rut);
+                }
+
+                Session::flash('ok','El cobro ha sido realizado exitosamente.');
+                return Redirect::back();
             }
-            $archivo = !empty($archivo) ? $archivo : null;
-            Extras\SendEmail::aviso_nuevo_cobro($request->input('email'), Session::get('nombre'), Session::get('id'), $fecha_vencimiento, $empresa, $archivo, $tabla_cobros->idCobros, $datos_deudor, $rut);
         }
-
-
-        return Redirect::back();
     }
 
     public function editar_puntuales(EditarIndividual $request)
@@ -345,35 +357,47 @@ class CobrarController extends Controller
         $fecha_vencimiento = Extras\Utilidades::formatoFechaDB($request->get('fecha_vencimiento'));
         $descripcion = $request->get('descripcion');
 
-        $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-        $rs = Cobros::editarCobrosPuntuales($idcobro, $id_usuario, $empresa, $rut_empresa, $descripcion, $fecha_vencimiento, $email, $monto);
+        if((int) $request->get('monto') <= 0){
+            return Redirect::back()->withErrors(['El monto debe ser mayor a 0']);
+        }else {
+            $date = Carbon::now();
 
-        if ($rs) {
-            Session::flash('ok', 'Cobro editado correctamente');
-        }
+            if($date > $fecha_vencimiento){
+                return Redirect::back()->withErrors(['Fecha de vencimiento invalida']);
+            }else{
 
-        $rut_traspaso = $request->input('rut_traspaso');
-        $email_traspaso = $request->input('email_traspaso');
+                $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
 
-        if ($rut_traspaso != $rut_empresa) {
-            if ($rut_traspaso != Session::get('rut')) {
-                if ($rut_traspaso != null && $email_traspaso != null) {
-                    $rs1 = Cobros::editar_traspaso_detalle($idcobro, $rut_traspaso, $email_traspaso);
-                    if ($rs1) {
-                        Session::flash('ok', 'Cobro editado correctamente');
+                $rs = Cobros::editarCobrosPuntuales($idcobro, $id_usuario, $empresa, $rut_empresa, $descripcion, $fecha_vencimiento, $email, $monto);
+
+                Extras\SendEmail::aviso_cobro_editado($request->input('email'), Session::get('nombre'), Session::get('id'), $fecha_vencimiento, $monto, $rut_empresa);
+
+                Session::flash('ok', 'Cobro editado correctamente');
+
+                $rut_traspaso = $request->input('rut_traspaso');
+                $email_traspaso = $request->input('email_traspaso');
+
+                if ($rut_traspaso != $rut_empresa) {
+                    if ($rut_traspaso != Session::get('rut')) {
+                        if ($rut_traspaso != null && $email_traspaso != null) {
+                            $rs1 = Cobros::editar_traspaso_detalle($idcobro, $rut_traspaso, $email_traspaso);
+                            if ($rs1) {
+                                Session::flash('ok', 'Cobro editado correctamente');
+                            }
+                        } else {
+                            //return Redirect::back()->withErrors(['Error' => 'Falta ingresar datos en el traspaso']);
+                        }
+                    } else {
+                        return Redirect::back()->withErrors(['Error' => 'No puedes agregar el traspaso a ti mismo']);
                     }
                 } else {
-                    //return Redirect::back()->withErrors(['Error' => 'Falta ingresar datos en el traspaso']);
+                    return Redirect::back()->withErrors(['Error' => 'El rut ya se encuentra registrado']);
                 }
-            } else {
-                return Redirect::back()->withErrors(['Error' => 'No puedes agregar el traspaso a ti mismo']);
+
+
+                return Redirect::back();
             }
-        } else {
-            return Redirect::back()->withErrors(['Error' => 'El rut ya se encuentra registrado']);
         }
-
-
-        return Redirect::back();
     }
 
     public function editar_detalle_nomina(EditarDetalleNomina $request)
@@ -515,6 +539,18 @@ class CobrarController extends Controller
                 $mensajes[] = "No puedes agregarte el cobro a ti mismo";
             }
 
+            if((int) $monto <= 0){
+                $errores = true;
+                $mensajes[] = "El monto debe ser mayor a 0";
+            }
+
+            $date = Carbon::now();
+
+            if($date > $fecha_vencimiento){
+                $errores = true;
+                $mensajes[] = "La fecha debe ser mayor al dia actual";
+            }
+
             if ($errores) {
                 $msg = Extras\Utilidades::errorMensajeLoop($row, $mensajes);
                 Session::flash('error_excel', $msg);
@@ -606,6 +642,8 @@ class CobrarController extends Controller
             }
         }
 
+        Session::flash('ok','Los cobros han sido registrados exitosamente.');
+
         return Redirect::back();
     }
 
@@ -617,245 +655,245 @@ class CobrarController extends Controller
             /*Nominas::where('idnominas', $id)
                     ->where('idUsuarios',$id_usuario)
                     ->update(['eliminado' => 1]);*/
-            Nominas::eliminar_nomina_hijos($id, $id_usuario);
-            Session::flash('ok', 'Se ha eliminado la nómina correctamente');
-        }
-        return Redirect::back();
-    }
+                    Nominas::eliminar_nomina_hijos($id, $id_usuario);
+                    Session::flash('ok', 'Se ha eliminado la nómina correctamente');
+                }
+                return Redirect::back();
+            }
 
-    public function eliminar_nomina_detalle(Request $request)
-    {
-        $idDetalle = $request->get('idnomina');
-        $id = $request->get('id_params');
-        if (is_numeric($idDetalle) && is_numeric($id)) {
-            $obj = NominasDetalles::where('idnominasdetalle', $idDetalle)->first();
-            $padre = Nominas::where('idnominas', $obj->idnominas)->first();
-            $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-            if ($padre != null && $padre->idUsuarios == $id_usuario) {
-                NominasDetalles::where('idnominasdetalle', $idDetalle)
-                    ->update(['eliminado' => 1]);
-
-                $contar = NominasDetalles::where('idnominas', $obj->idnominas)->where('eliminado', 0)->count();
-                if ($contar <= 0) {
-                    Nominas::where('idnominas', $obj->idnominas)->where('idUsuarios', $id_usuario)
+            public function eliminar_nomina_detalle(Request $request)
+            {
+                $idDetalle = $request->get('idnomina');
+                $id = $request->get('id_params');
+                if (is_numeric($idDetalle) && is_numeric($id)) {
+                    $obj = NominasDetalles::where('idnominasdetalle', $idDetalle)->first();
+                    $padre = Nominas::where('idnominas', $obj->idnominas)->first();
+                    $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
+                    if ($padre != null && $padre->idUsuarios == $id_usuario) {
+                        NominasDetalles::where('idnominasdetalle', $idDetalle)
                         ->update(['eliminado' => 1]);
 
-                    Session::flash('ok', 'Se ha eliminado la nómina correctamente');
+                        $contar = NominasDetalles::where('idnominas', $obj->idnominas)->where('eliminado', 0)->count();
+                        if ($contar <= 0) {
+                            Nominas::where('idnominas', $obj->idnominas)->where('idUsuarios', $id_usuario)
+                            ->update(['eliminado' => 1]);
+
+                            Session::flash('ok', 'Se ha eliminado la nómina correctamente');
+                            return Redirect::back();
+                        }
+                        Session::flash('ok', 'Se ha eliminado el detalle correctamente');
+                    }
+                }
+                return Redirect::back();
+            }
+
+            public function eliminarcobro(Request $request)
+            {
+                $id = $request->get('idcobro');
+                if (is_numeric($id)) {
+                    $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
+                    Cobros::where('idCobros', $id)
+                    ->where('idUsuarios', $id_usuario)
+                    ->update(['eliminado' => 1]);
+                    Session::flash('ok', 'Se ha eliminado el cobro correctamente');
+                }
+                return Redirect::back();
+            }
+
+            public function eliminar_cobro_detalle(Request $request)
+            {
+                $idDetalle = $request->get('idcobro');
+                $id = $request->get('id_params');
+                if (is_numeric($idDetalle) && is_numeric($id)) {
+                    $obj = CobrosDetalles::where('idCobrosDetalle', $idDetalle)->first();
+                    $padre = Cobros::where('idCobros', $obj->idCobros)->first();
+                    $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
+                    if ($padre != null && $padre->idUsuarios == $id_usuario) {
+                        CobrosDetalles::where('idCobrosDetalle', $idDetalle)
+                        ->update(['eliminado' => 1]);
+
+                        $contar = CobrosDetalles::where('idCobros', $obj->idCobros)->where('eliminado', 0)->count();
+                        if ($contar <= 0) {
+                            Cobros::where('idCobros', $obj->idCobros)->where('idUsuarios', $id_usuario)
+                            ->update(['eliminado' => 1]);
+
+                            Session::flash('ok', 'Se ha eliminado el cobro correctamente');
+                            return redirect('/cuentas-cobrar-log/puntales');
+                        }
+                        Session::flash('ok', 'Se ha eliminado el detalle correctamente');
+                    }
+                }
+                return Redirect::back();
+            }
+
+
+            public function pagarcuenta_puntuales(\App\Http\Requests\PagarCuentas $request)
+            {
+                $fecha_pago = $request->input('fecha_pago_pop');
+                $fecha_pago = Extras\Utilidades::formatoFechaDB($fecha_pago);
+                $monto = $request->input('monto_pop');
+                $id_pago = $request->input('id_pago_pop');
+                $nr_transaccion = $request->input('nro_transaccion_pop');
+                $idtipopago = $request->input('metodo_pago');
+                $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
+                $rs = Cobros::pagarcuenta($id_pago, $id_usuario, $monto, $fecha_pago, $nr_transaccion, $idtipopago);
+                if ($rs) {
+                    Session::flash('ok', 'Cuenta pagada correctamente');
+                    return Redirect::back();
+                } else {
+                    Session::flash('error', 'Hubo un error al pagar la cuenta, intente nuevamente');
                     return Redirect::back();
                 }
-                Session::flash('ok', 'Se ha eliminado el detalle correctamente');
             }
-        }
-        return Redirect::back();
-    }
-
-    public function eliminarcobro(Request $request)
-    {
-        $id = $request->get('idcobro');
-        if (is_numeric($id)) {
-            $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-            Cobros::where('idCobros', $id)
-                ->where('idUsuarios', $id_usuario)
-                ->update(['eliminado' => 1]);
-            Session::flash('ok', 'Se ha eliminado el cobro correctamente');
-        }
-        return Redirect::back();
-    }
-
-    public function eliminar_cobro_detalle(Request $request)
-    {
-        $idDetalle = $request->get('idcobro');
-        $id = $request->get('id_params');
-        if (is_numeric($idDetalle) && is_numeric($id)) {
-            $obj = CobrosDetalles::where('idCobrosDetalle', $idDetalle)->first();
-            $padre = Cobros::where('idCobros', $obj->idCobros)->first();
-            $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-            if ($padre != null && $padre->idUsuarios == $id_usuario) {
-                CobrosDetalles::where('idCobrosDetalle', $idDetalle)
-                    ->update(['eliminado' => 1]);
-
-                $contar = CobrosDetalles::where('idCobros', $obj->idCobros)->where('eliminado', 0)->count();
-                if ($contar <= 0) {
-                    Cobros::where('idCobros', $obj->idCobros)->where('idUsuarios', $id_usuario)
-                        ->update(['eliminado' => 1]);
-
-                    Session::flash('ok', 'Se ha eliminado el cobro correctamente');
-                    return redirect('/cuentas-cobrar-log/puntales');
-                }
-                Session::flash('ok', 'Se ha eliminado el detalle correctamente');
-            }
-        }
-        return Redirect::back();
-    }
 
 
-    public function pagarcuenta_puntuales(\App\Http\Requests\PagarCuentas $request)
-    {
-        $fecha_pago = $request->input('fecha_pago_pop');
-        $fecha_pago = Extras\Utilidades::formatoFechaDB($fecha_pago);
-        $monto = $request->input('monto_pop');
-        $id_pago = $request->input('id_pago_pop');
-        $nr_transaccion = $request->input('nro_transaccion_pop');
-        $idtipopago = $request->input('metodo_pago');
-        $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-        $rs = Cobros::pagarcuenta($id_pago, $id_usuario, $monto, $fecha_pago, $nr_transaccion, $idtipopago);
-        if ($rs) {
-            Session::flash('ok', 'Cuenta pagada correctamente');
-            return Redirect::back();
-        } else {
-            Session::flash('error', 'Hubo un error al pagar la cuenta, intente nuevamente');
-            return Redirect::back();
-        }
-    }
+            public function pagarcuenta_nominas(\App\Http\Requests\PagarCuentas $request)
+            {
+                $fecha_pago = $request->input('fecha_pago_pop');
+                $fecha_pago = Extras\Utilidades::formatoFechaDB($fecha_pago);
+                $monto = $request->input('monto_pop');
+                $id_pago = $request->input('id_pago_pop');
+                $nr_transaccion = $request->input('nro_transaccion_pop');
+                $idtipopago = $request->input('metodo_pago');
 
-
-    public function pagarcuenta_nominas(\App\Http\Requests\PagarCuentas $request)
-    {
-        $fecha_pago = $request->input('fecha_pago_pop');
-        $fecha_pago = Extras\Utilidades::formatoFechaDB($fecha_pago);
-        $monto = $request->input('monto_pop');
-        $id_pago = $request->input('id_pago_pop');
-        $nr_transaccion = $request->input('nro_transaccion_pop');
-        $idtipopago = $request->input('metodo_pago');
-
-        $rs = NominasDetalles::pagarcuenta($id_pago, $monto, $fecha_pago, $nr_transaccion, $idtipopago);
-        if ($rs) {
-            Session::flash('ok', 'Cuenta pagada correctamente');
-            return Redirect::back();
-        } else {
-            Session::flash('error', 'Hubo un error al pagar la cuenta, intente nuevamente');
-            return Redirect::back();
-        }
-    }
-
-    public function pagadas_detalle($id, Request $request)
-    {
-        if (is_numeric($id)) {
-
-            $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
-            $nombre = Nominas::where('idUsuarios', $id_usuario)
-                ->where('idnominas', $id)
-                ->select('empresa')->first();
-
-            if (!is_null($nombre)) {
-                $nombre = $nombre->empresa;
-                $detalles = Cobros::detallenominas_pagadas($id, $request->get('monto'));
-                $detalles = $detalles->paginate(10);
-                $menu_activado = 2;
-                return view('logueado/cobrar_cuentas/pagadas/detalle', compact('detalles', 'nombre', 'id', 'menu_activado'));
-            } else {
-                Redirect::back();
-            }
-        } else {
-            return Redirect::back();
-        }
-    }
-
-    public function adjuntar_doc_individual(AdjuntarDocumentoPortal $request)
-    {
-        $file = $request->file('doc');
-        $id = $request->input('id_adjuntar');
-        $extension = $file->getClientOriginalExtension();
-        $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
-        if ($file->move("upload/individual", $fileName)) {
-            $rs = Cobros::adjuntar_doc(Session::get('id'), $id, $fileName);
-            if ($rs) {
-                $rs = Cobros::buscar_cobro($id, Session::get('id'));
-                Extras\SendEmail::nuevo_archivo_adjunto($rs->email, Session::get('nombre'), Session::get('id'));
-                Session::flash('ok', 'Documento adjuntado correctamente');
-                return Redirect::back();
-            }
-        }
-        return Redirect::back();
-    }
-
-    public function adjuntar_doc_nomina(AdjuntarDocumentoPortal $request)
-    {
-        $file = $request->file('doc');
-        $id = $request->input('id_adjuntar');
-        $extension = $file->getClientOriginalExtension();
-        $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
-        if ($file->move("upload/individual", $fileName)) {
-            $rs = NominasDetalles::adjuntar_doc_nomina(Session::get('id'), $id, $fileName);
-            if ($rs) {
-                $rs = NominasDetalles::buscar_nomina($id, Session::get('id'));
-                Extras\SendEmail::nuevo_archivo_adjunto($rs->email, Session::get('nombre'), Session::get('id'));
-                Session::flash('ok', 'Documento adjuntado correctamente');
-                return Redirect::back();
-            }
-        }
-        return Redirect::back();
-    }
-
-    public function adjuntar_doc_nomina_masiva(AdjuntarDocumentoPortal $request)
-    {
-        $file = $request->file('doc');
-        //$id = $request->input('id_adjuntar');
-        $extension = $file->getClientOriginalExtension();
-        $data = json_decode($request->input('id_adjuntar_nominas'));
-        $total = 0;
-        $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
-        if ($file->move("upload/individual", $fileName)) {
-            foreach ($data as $fila) {
-                $rs = NominasDetalles::adjuntar_doc_nomina(Session::get('id'), $fila, $fileName);
+                $rs = NominasDetalles::pagarcuenta($id_pago, $monto, $fecha_pago, $nr_transaccion, $idtipopago);
                 if ($rs) {
-                    $total = $total + 1;
+                    Session::flash('ok', 'Cuenta pagada correctamente');
+                    return Redirect::back();
+                } else {
+                    Session::flash('error', 'Hubo un error al pagar la cuenta, intente nuevamente');
+                    return Redirect::back();
+                }
+            }
+
+            public function pagadas_detalle($id, Request $request)
+            {
+                if (is_numeric($id)) {
+
+                    $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
+                    $nombre = Nominas::where('idUsuarios', $id_usuario)
+                    ->where('idnominas', $id)
+                    ->select('empresa')->first();
+
+                    if (!is_null($nombre)) {
+                        $nombre = $nombre->empresa;
+                        $detalles = Cobros::detallenominas_pagadas($id, $request->get('monto'));
+                        $detalles = $detalles->paginate(10);
+                        $menu_activado = 2;
+                        return view('logueado/cobrar_cuentas/pagadas/detalle', compact('detalles', 'nombre', 'id', 'menu_activado'));
+                    } else {
+                        Redirect::back();
+                    }
+                } else {
+                    return Redirect::back();
+                }
+            }
+
+            public function adjuntar_doc_individual(AdjuntarDocumentoPortal $request)
+            {
+                $file = $request->file('doc');
+                $id = $request->input('id_adjuntar');
+                $extension = $file->getClientOriginalExtension();
+                $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
+                if ($file->move("upload/individual", $fileName)) {
+                    $rs = Cobros::adjuntar_doc(Session::get('id'), $id, $fileName);
+                    if ($rs) {
+                        $rs = Cobros::buscar_cobro($id, Session::get('id'));
+                        Extras\SendEmail::nuevo_archivo_adjunto($rs->email, Session::get('nombre'), Session::get('id'));
+                        Session::flash('ok', 'Documento adjuntado correctamente');
+                        return Redirect::back();
+                    }
+                }
+                return Redirect::back();
+            }
+
+            public function adjuntar_doc_nomina(AdjuntarDocumentoPortal $request)
+            {
+                $file = $request->file('doc');
+                $id = $request->input('id_adjuntar');
+                $extension = $file->getClientOriginalExtension();
+                $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
+                if ($file->move("upload/individual", $fileName)) {
+                    $rs = NominasDetalles::adjuntar_doc_nomina(Session::get('id'), $id, $fileName);
+                    if ($rs) {
+                        $rs = NominasDetalles::buscar_nomina($id, Session::get('id'));
+                        Extras\SendEmail::nuevo_archivo_adjunto($rs->email, Session::get('nombre'), Session::get('id'));
+                        Session::flash('ok', 'Documento adjuntado correctamente');
+                        return Redirect::back();
+                    }
+                }
+                return Redirect::back();
+            }
+
+            public function adjuntar_doc_nomina_masiva(AdjuntarDocumentoPortal $request)
+            {
+                $file = $request->file('doc');
+        //$id = $request->input('id_adjuntar');
+                $extension = $file->getClientOriginalExtension();
+                $data = json_decode($request->input('id_adjuntar_nominas'));
+                $total = 0;
+                $fileName = Session::get('id') . '-' . uniqid(rand(), true) . '.' . $extension;
+                if ($file->move("upload/individual", $fileName)) {
+                    foreach ($data as $fila) {
+                        $rs = NominasDetalles::adjuntar_doc_nomina(Session::get('id'), $fila, $fileName);
+                        if ($rs) {
+                            $total = $total + 1;
                     //$rs = NominasDetalles::buscar_nomina($id,Session::get('id'));
                     //Extras\SendEmail::nuevo_archivo_adjunto($rs->email,Session::get('nombre'),Session::get('id'));
 
+                        }
+                    }
                 }
+                Session::flash('ok', $total . ' Documento(s) adjuntado(s) correctamente');
+                return Redirect::back();
+            }
+
+            public function todo(Request $request)
+            {
+                $item_seleccionado = $request->get('empresa');
+
+                $empresa = $request->input('empresa');
+                $rut = $request->input('rut');
+                $rut = str_replace('.', '', $rut);
+
+                $tabla = Cobros::ListarMisCobrosPendiente(Session::get('id'), $empresa, $rut, $request->get('fecha'), $request->get('monto'));
+                $tabla = $tabla->paginate(10);
+                $lista_empresas = Cobros::ComboboxMisCobrosPendiente(Session::get('id'));
+
+                $metodo_pago = TipoPagos::listar_pagos();
+                $id = 0;
+                $menu_cobro = 3;
+                $menu_activado = 2;
+                return view('logueado/cobrar_cuentas/todo/index', compact('tabla', 'item_seleccionado', 'lista_empresas', 'metodo_pago', 'id', 'menu_cobro', 'menu_activado'));
+            }
+
+            public function exportar_todo()
+            {
+                $nombre_archivo = "Gestion_Pagos_" . Session::get('mi_nombre') . " " . Session::get('mi_apellido') . "_" . Extras\Utilidades::ImprimirFecha(date("Y-m-d"));
+                Excel::create($nombre_archivo, function ($excel) {
+                    $excel->sheet('Todo', function ($sheet) {
+                        $data = Cobros::exportar_todo(Session::get('id'));
+                        $sheet->fromArray($data);
+                        $sheet->setAutoFilter();
+                    });
+                })->export('xls');
+            }
+
+            public function ajaxEmailByRut(Request $request)
+            {
+                $this->validate($request, [
+                    'rut' => 'required'
+                ]);
+
+                try {
+                    $rut = str_replace('.', '', $request->get('rut'));
+                    $usuario = Usuarios::where('rut', $rut)->first();
+                    if ($usuario == null) throw new \Exception("No se encontró rut");
+                    $email = $usuario->email;
+                } catch (\Exception $exception) {
+                    return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+                }
+
+                return response()->json(['success' => true, 'data' => $email]);
             }
         }
-        Session::flash('ok', $total . ' Documento(s) adjuntado(s) correctamente');
-        return Redirect::back();
-    }
-
-    public function todo(Request $request)
-    {
-        $item_seleccionado = $request->get('empresa');
-
-        $empresa = $request->input('empresa');
-        $rut = $request->input('rut');
-        $rut = str_replace('.', '', $rut);
-
-        $tabla = Cobros::ListarMisCobrosPendiente(Session::get('id'), $empresa, $rut, $request->get('fecha'), $request->get('monto'));
-        $tabla = $tabla->paginate(10);
-        $lista_empresas = Cobros::ComboboxMisCobrosPendiente(Session::get('id'));
-
-        $metodo_pago = TipoPagos::listar_pagos();
-        $id = 0;
-        $menu_cobro = 3;
-        $menu_activado = 2;
-        return view('logueado/cobrar_cuentas/todo/index', compact('tabla', 'item_seleccionado', 'lista_empresas', 'metodo_pago', 'id', 'menu_cobro', 'menu_activado'));
-    }
-
-    public function exportar_todo()
-    {
-        $nombre_archivo = "Gestion_Pagos_" . Session::get('mi_nombre') . " " . Session::get('mi_apellido') . "_" . Extras\Utilidades::ImprimirFecha(date("Y-m-d"));
-        Excel::create($nombre_archivo, function ($excel) {
-            $excel->sheet('Todo', function ($sheet) {
-                $data = Cobros::exportar_todo(Session::get('id'));
-                $sheet->fromArray($data);
-                $sheet->setAutoFilter();
-            });
-        })->export('xls');
-    }
-
-    public function ajaxEmailByRut(Request $request)
-    {
-        $this->validate($request, [
-            'rut' => 'required'
-        ]);
-
-        try {
-            $rut = str_replace('.', '', $request->get('rut'));
-            $usuario = Usuarios::where('rut', $rut)->first();
-            if ($usuario == null) throw new \Exception("No se encontró rut");
-            $email = $usuario->email;
-        } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
-        }
-
-        return response()->json(['success' => true, 'data' => $email]);
-    }
-}

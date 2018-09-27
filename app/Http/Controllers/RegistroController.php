@@ -25,8 +25,7 @@ class RegistroController extends  Controller
     }
 
     public function postRegistro(RegistrarRequest $request){
-        SendEmail::nuevo_registro('antoniohaces1410@gmail.com','Prueba');
-        /*$rut = $request->input('rut');
+        $rut = $request->input('rut');
         $request["rut"] = Utilidades::modificar_rut($rut);
         $rs = Usuarios::buscar_usuario_por_rut($request["rut"]);
         $email = Usuarios::buscar_usuario_por_email($request->input('email'));
@@ -47,6 +46,6 @@ class RegistroController extends  Controller
                 Session::flash('ok','Te enviaremos un e-mail para confirmar tu registro en nuestra plataforma. <br> <hr><strong>Recuerda:</strong> por políticas de seguridad de tu servicio de e-mail, este pode ser derivado a la carpeta de “Correos no deseados”. <br> Revísala en caso de que nuestro e-mail tarde mucho en llegar.');
             }
             return redirect()->to('/');
-        }*/
+        }
     }
 }

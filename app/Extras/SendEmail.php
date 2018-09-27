@@ -21,7 +21,7 @@ class SendEmail
             'mensaje' => $msg->texto,
             'titulo' => $msg->titulo
         );
-        $a = Mail::queue('emails.password', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.password', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
         });
@@ -48,7 +48,7 @@ class SendEmail
             'titulo' => $msg->titulo,
             'cobrador' => $user->nombre
         );
-        $a = Mail::queue('emails.email_confirmar_cobrador', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.email_confirmar_cobrador', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', "Confirmar Usuario");
             $message->to($data['to'])->subject('Portal de pagos');
         });
@@ -71,7 +71,7 @@ class SendEmail
             'titulo' => $msg->titulo
         );
 
-        $a = Mail::queue('emails.email_nuevoregistro', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.email_nuevoregistro', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
         });
@@ -94,9 +94,9 @@ class SendEmail
             'url_active' => asset('/active?b=' . Crypt::encrypt($email)),
         );
 
-        $a = Mail::queue('emails.email_bienvenida', $data, function ($message) use ($data) {
-            $message->from('atencion@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+        $a = Mail::send('emails.email_bienvenida', $data, function ($message) use ($data) {
+            $message->from('noreply@portaldepagos.cl', $data['titulo']);
+            $message->to($data['to'])->subject($data['titulo']);
         });
 
         if ($a) {
@@ -116,7 +116,7 @@ class SendEmail
             'titulo' => $msg->titulo
         );
 
-        $a = Mail::queue('emails.email_datos_cambiado', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.email_datos_cambiado', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
         });
@@ -150,13 +150,39 @@ class SendEmail
         if ($rut) {
             $data['rut'] = base64_encode($rut);
         }
-        $a = Mail::queue('emails.email_aviso_nuevo_cobro', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.email_aviso_nuevo_cobro', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
             if (!empty($data['archivo'])) {
                 $message->attach($data['archivo']);
             }
         });
+        if ($a) {
+            $d = Usuarios::buscar_usuario_por_email($email);
+            if ($d) {
+                HistorialEmail::agregar_de($msg->titulo, "...", $d->idUsuarios, "-", 6, $de);
+            }
+        }
+    }
+
+    public static function aviso_cobro_editado($email, $session_nombre, $de, $fecha_vencimiento, $monto, $deudor)
+    {
+        $msg = ContenidoEmail::buscar(6);
+        $data = array(
+            'to' => $email,
+            'empresa' => $session_nombre,
+            'nombre' => $session_nombre,
+            'titulo' => "Edicion de cobro",
+            'fecha_vencimiento' => $fecha_vencimiento,
+            'monto' => $monto,
+            'deudor' => $deudor
+        );
+
+        $a = Mail::send('emails.email_cobro_editado', $data, function ($message) use ($data) {
+            $message->from('noreply@portaldepagos.cl', $data['titulo']);
+            $message->to($data['to'])->subject('Portal de pagos');
+        });
+
         if ($a) {
             $d = Usuarios::buscar_usuario_por_email($email);
             if ($d) {
@@ -174,7 +200,7 @@ class SendEmail
             'titulo' => $msg->titulo,
             'archivo' => $archivo
         );
-        $a = Mail::queue('emails.email_nuevo_archivo', $data, function ($message) use ($data) {
+        $a = Mail::send('emails.email_nuevo_archivo', $data, function ($message) use ($data) {
             $message->from('noreply@portaldepagos.cl', $data['titulo']);
             $message->to($data['to'])->subject('Portal de pagos');
             if (!empty($data['archivo'])) {
