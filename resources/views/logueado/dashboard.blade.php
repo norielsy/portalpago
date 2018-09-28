@@ -6,6 +6,8 @@
 
 @section('content')
     <div class="container">
+        @include('logueado.publicidad')
+        @yield('content_publicidad')
 
         <div class="row">
             <div class="col-lg-12">
@@ -50,7 +52,7 @@
                         <table class="table table-hover table-responsive table-condensed listado listado-pendiente-dashboard">
                             <thead>
                             <tr>
-                                <th> # </th>
+                                {{--<th> # </th>--}}
                                 <th>Nombre/Empresa</th>
                                 <th>Descripción</th>
                                 <th>Monto</th>
@@ -64,10 +66,10 @@
 
                                     <td class="text-center hidden-lg hidden-sm hidden-md"><b>{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_vencimiento)}}</b></td>
 
-                                    <td>{{$fila->idCobros}}</td>
-                                    <td>{{$fila->cobrador->nombre}}</td>
+                                    {{--<td>{{$fila->idCobros}}</td>--}}
+                                    <td>{{$fila->empresa}}</td>
                                     <td>{{$fila->descripcion}}</td>
-                                    <td>{{App\Extras\Utilidades::Moneda($fila->monto)}}</td>
+                                    <td class="text-right">{{App\Extras\Utilidades::Moneda($fila->monto)}}</td>
                                     <td class="hidden-xs">{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_vencimiento)}}</td>
                                 </tr>
                             @endforeach
@@ -112,11 +114,11 @@
                         <table class="table table-hover table-responsive table-condensed listado listado-pendiente-dashboard">
                             <thead>
                             <tr>
-                                <th> #</th>
+                                {{--<th> #</th>--}}
                                 <th>Nombre/Empresa</th>
                                 <th>Descripción</th>
-                                <th class="text-right">Monto</th>
-                                <th class="text-center">Vencimiento</th>
+                                <th>Monto</th>
+                                <th>Vencimiento</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -125,10 +127,10 @@
 
                                     <td class="text-center hidden-lg hidden-sm hidden-md"><b>{{App\Extras\Utilidades::ImprimirFecha($cobro->fecha_vencimiento)}}</b></td>
 
-                                    <td>{{$cobro->idCobros}}</td>
+                                    {{--<td>{{$cobro->idCobros}}</td>--}}
                                     <td>{{$cobro->empresa}}</td>
                                     <td>{{$cobro->descripcion}}</td>
-                                    <td>{{App\Extras\Utilidades::Moneda($cobro->monto)}}</td>
+                                    <td class="text-right">{{App\Extras\Utilidades::Moneda($cobro->monto)}}</td>
                                     <td class="hidden-xs">{{App\Extras\Utilidades::ImprimirFecha($cobro->fecha_vencimiento)}}</td>
                                 </tr>
                             @endforeach

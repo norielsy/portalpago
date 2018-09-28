@@ -150,7 +150,7 @@
                             <table class="table listado listado-nominas table-hover">
                                 <thead>
                                 <tr>
-                                    <th> #</th>
+                                    {{--<th> #</th>--}}
                                     <!--<th>Rut</th>-->
                                     <th>Nombre</th>
                                     <!--<th>Descripción</th>-->
@@ -171,7 +171,7 @@
                                 <tbody>
                                 @foreach($cobros as $cobro)
                                     <tr>
-                                        <td>{{$cobro->idnominas}}</td>
+                                        {{--<td>{{$cobro->idnominas}}</td>--}}
                                     <!--<td>{{$cobro->rut}}</td>-->
                                         <td>{{$cobro->empresa}}</td>
                                     <!--<td>{{$cobro->descripcion}}</td>-->

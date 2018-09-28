@@ -80,7 +80,7 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-primarynew pull-right" type="submit">Subir</button>
+                    <button class="btn  pull-right" type="submit">Subir</button>
                 </div>
             </div>
         </div>

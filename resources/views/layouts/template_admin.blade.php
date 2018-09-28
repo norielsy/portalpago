@@ -20,7 +20,9 @@
     <!-- Morris Charts CSS -->
     <link href="{{ asset('public/admin/bower_components/morrisjs/morris.css') }}" rel="stylesheet">
     <link href="{{ asset('public/assets/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
-
+    <script>
+        url='{{url()}}/'
+    </script>
     <script src="{{ asset('public/js/jquery-1.8.3.min.js')}}"></script>
     <script src="{{ asset('public/js/bootstrap.min.js')}}"> </script>
 

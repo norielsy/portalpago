@@ -49,7 +49,7 @@
                                 <tr>
                                     <td align="center">
                                         <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">
-                                            <a href="http://portalpago.r2da.com/cuentas-por-pagar#verpago_{{$cobro_id}}"
+                                            <a href="http://test01.portaldepagos.cl/cuentas-por-pagar#verpago_{{$cobro_id}}"
                                                style="width:200px; border-radius: 4px; font-weight:bold; padding:15px 20px 15px; text-decoration:none; background:#71bc37; color:#fff; display: inline-block;">Consultar
                                                 Pagos Pendiente</a>
                                         </p>
@@ -62,11 +62,11 @@
                                     <td align="center">
                                         <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">
                                             @if(!empty($rut))
-                                                <a href="http://portalpago.r2da.com/consultar/resultado?token={{$rut}}"
+                                                <a href="http://test01.portaldepagos.cl/consultar/resultado?token={{$rut}}"
                                                    style="width:200px; border-radius: 4px; font-weight:bold; padding:15px 20px 15px; text-decoration:none; background:#71bc37; color:#fff; display: inline-block;">Consultar
                                                     Pagos Pendientes</a>
                                             @else
-                                                <a href="http://portalpago.r2da.com/consultar"
+                                                <a href="http://test01.portaldepagos.cl/consultar"
                                                    style="width:200px; border-radius: 4px; font-weight:bold; padding:15px 20px 15px; text-decoration:none; background:#71bc37; color:#fff; display: inline-block;">Consultar
                                                     Pagos Pendientes</a>
                                             @endif

@@ -24,7 +24,7 @@
                         <table class="table table-hover table-responsive table-condensed listado listado-pendiente-dashboard">
                             <thead>
                             <tr>
-                                <th> #</th>
+                                {{--<th> #</th>--}}
                                 <th>Rut</th>
                                 <th>Nombre/Empresa</th>
                                 <th>Monto ($)</th>
@@ -35,8 +35,8 @@
                             @foreach($pendientes as $cobro)
                                 <tr>
                                     <td class="text-center hidden-lg hidden-sm hidden-md">{{App\Extras\Utilidades::ImprimirFecha($cobro->fecha_vencimiento)}}</td>
-                                    <td>{{$cobro->idCobros}}</td>
-                                    <td>{{$cobro->rut_empresa}}</td>
+                                    {{--<td>{{$cobro->idCobros}}</td>--}}
+                                    <td>{{App\Helper\Rut::rut($cobro->rut_empresa)}}</td>
                                     <td>{{$cobro->empresa}}</td>
                                     <td>{{App\Extras\Utilidades::Moneda($cobro->monto)}}</td>
                                     <td class="hidden-xs">{{App\Extras\Utilidades::ImprimirFecha($cobro->fecha_vencimiento)}}</td>
@@ -63,7 +63,7 @@
                         <table class="table listado listado-realizados table-hover table-responsive table-condensed">
                             <thead>
                             <tr>
-                                <th> #</th>
+                                {{--<th> #</th>--}}
                                 <th style="min-width:100px;">Rut</th>
                                 <th>Nombre/Empresa</th>
                                 <th>Monto ($)</th>
@@ -74,13 +74,13 @@
                             <tbody>
                             @foreach($pagadas as $pagada)
                                 <tr>
-                                    <td>{{$pagada->idCobros}}</td>
-                                    <td>{{$pagada->rut}}</td>
+                                    {{--<td>{{$pagada->idCobros}}</td>--}}
+                                    <td>{{App\Helper\Rut::rut($pagada->rut)}}</td>
                                     <td>{{$pagada->empresa}}</td>
                                     <td>{{App\Extras\Utilidades::Moneda($pagada->monto)}}</td>
                                     <td>{{App\Extras\Utilidades::ImprimirFecha($pagada->fecha_pago)}}</td>
                                     <td>@if(empty($pagada->forma_pago))
-                                            Transferencia Sistema
+                                            TEF (Conc.Auto)
                                         @else
                                             {{@$pagada->forma_pago}}
                                         @endif</td>

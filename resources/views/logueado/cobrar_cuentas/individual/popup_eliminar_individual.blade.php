@@ -7,7 +7,7 @@
                 <h4 class="modal-title">Eliminar Cobro</h4>
             </div>
             <div class="modal-body">
-                <p>¿Estás seguro que deseas el cobro?</p>
+                <p>¿Estás seguro que deseas eliminar el cobro?</p>
             </div>
             <div class="modal-footer">
                 <input type="hidden" name="idcobro" id="id_item_delete_individual" value="">

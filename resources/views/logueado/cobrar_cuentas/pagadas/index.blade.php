@@ -59,7 +59,7 @@
                         <table class="table listado listado-cobro-realizado table-hover">
                             <thead>
                             <tr>
-                                <th> #</th>
+                                {{--<th> #</th>--}}
                                 <th style="min-width:100px;">Rut</th>
                                 <th>Nombre/Empresa</th>
                                 <th>Descripción</th>
@@ -98,14 +98,13 @@
 
                                 <th>Forma de pago</th>
 
-                                <th>Adjuntar</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($pagadas as $fila)
                                 <tr>
-                                    <td>{{$fila->idCobros}}</td>
-                                    <td>{{$fila->rut}}</td>
+                                    {{--<td>{{$fila->idCobros}}</td>--}}
+                                    <td>{{App\Helper\Rut::rut($fila->rut)}}</td>
                                     <td>{{$fila->empresa}}</td>
                                     <td>{{$fila->descripcion}}</td>
                                     <td>{{App\Extras\Utilidades::Moneda($fila->monto)}}</td>
@@ -113,35 +112,41 @@
                                     <td>{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_pago)}}</td>
                                     <td>
                                         @if(empty($fila->forma_pago))
-                                            Transferencia Sistema
+                                            TEF (Conc.Auto)
                                         @else
                                             {{@$fila->forma_pago}}
                                         @endif
                                     </td>
 
-                                    <td class="text-center">
-                                        @if($fila->tipo == 1)
-                                            @if(empty($fila->adjunto))
-                                                <a href="javascript:;" attr-id="{{$fila->idCobros}}"
-                                                   class="popup_adjuntar_individual">
-                                                    <i class="icono-verde fa fa-file-text" aria-hidden="true"></i>
-                                                </a>
-                                            @else
-                                                <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
-                                                   class="btn btn-success btn-sm">Descargar</a>
+
+                                    @if(!empty($ff[$fila->idCobros]))
+                                        <td class="text-center">
+                                            <a href="{{asset($ff[$fila->idCobros])}}" target="_blank"
+                                               class="btn btn-success btn-sm">Archivo adjunto</a>
+                                        </td>
+
+                                    @endif
+                                    {{--@if($fila->tipo == 1)
+                                        @if(empty($fila->adjunto))
+                                            @if(!empty($ff[$fila->idCobros]))
+                                                <a href="{{asset($ff[$fila->idCobros])}}" target="_blank"
+                                                   class="btn btn-success btn-sm">Archivo adjunto</a>
                                             @endif
-                                        @elseif($fila->tipo == 2)
-                                            @if(empty($fila->adjunto))
-                                                <a href="javascript:;" attr-id="{{$fila->idCobros}}"
-                                                   class="popup_adjuntar_nomina">
-                                                    <i class="icono-verde fa fa-file-text" aria-hidden="true"></i>
-                                                </a>
-                                            @else
-                                                <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
-                                                   class="btn btn-success btn-sm">Descargar</a>
-                                            @endif
+                                        @else
+                                            <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
+                                               class="btn btn-success btn-sm">Descargar</a>
                                         @endif
-                                    </td>
+                                    @elseif($fila->tipo == 2)
+                                        @if(empty($fila->adjunto))
+                                            <a href="javascript:;" attr-id="{{$fila->idCobros}}"
+                                               class="popup_adjuntar_nomina">
+                                                <i class="icono-verde fa fa-file-text" aria-hidden="true"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
+                                               class="btn btn-success btn-sm">Descargar</a>
+                                        @endif
+                                    @endif--}}
                                 </tr>
                             @endforeach
                             </tbody>

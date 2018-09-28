@@ -102,7 +102,7 @@
                             <table class="table listado listado-deudas table-hover">
                                 <thead>
                                 <tr>
-                                    <th> #</th>
+                                    {{--<th> #</th>--}}
                                     <th>Rut</th>
                                     <th>Nombre/Empresa</th>
                                     <th>Descripción</th>
@@ -133,8 +133,8 @@
                                 <tbody>
                                 @foreach($nopagadas as $fila)
                                     <tr @if($fila->fecha_vencimiento < date("Y-m-d")) class="danger" @endif>
-                                        <td>{{$fila->idCobros}}</td>
-                                        <td>{{$fila->rut}}</td>
+                                        {{--<td>{{$fila->idCobros}}</td>--}}
+                                        <td>{{App\Helper\Rut::rut($fila->rut)}}</td>
                                         <td>{{$fila->empresa}}</td>
                                         <td>{{$fila->descripcion}}</td>
                                         <td>{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_vencimiento)}}</td>
@@ -145,8 +145,8 @@
                                             </button>
                                         </td>
                                         <td>
-                                            @if($fila->adjunto != 0 && $fila->adjunto != null)
-                                                <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
+                                            @if(!empty($ff[$fila->idCobros]))
+                                                <a href="{{asset($ff[$fila->idCobros])}}" target="_blank"
                                                    class="btn btn-success btn-sm">Archivo adjunto</a>
                                             @endif
                                         </td>

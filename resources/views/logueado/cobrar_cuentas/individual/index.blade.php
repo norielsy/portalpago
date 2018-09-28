@@ -43,13 +43,20 @@
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group hg">
                                                     <label class="control-label" for="rut_empresa">Rut</label>
-                                                    {!! Form::text('rut_empresa',null,['class' => 'form-control rut_input_point','placeholder' => 'Rut']) !!}
+                                                    {!! Form::text('rut_empresa',null,['class' => 'form-control rut_input_point','placeholder' => 'Rut', 'id' => 'rutCobroIndividual']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 col-xs-12">
                                                 <div class="form-group hg">
-                                                    <label class="control-label" for="email">Email</label>
-                                                    {!! Form::text('email',null,['class' => 'form-control','placeholder' => 'Email']) !!}
+                                                    <label class="control-label" for="email">Email <i class="fa fa-spin fa-spinner hide" id="loading_email"></i> <small id="email_hide"></small></label>
+                                                    {!! Form::text('email',null,['class' => 'form-control','placeholder' => 'Email', 'id' => 'email_cobro']) !!}
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="checkbox hide" id="check_email_container">
+                                                        <label>
+                                                            <input type="checkbox" id="check_email"> Usar email guardado en el sistema
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 col-xs-12">
@@ -86,7 +93,7 @@
                                 <div class="row">
                                     <div class="col-xs-12 clearfix">
                                         <br>
-                                        <button class="btn btn-primarynew pull-right btn-sm" type="submit">
+                                        <button class="btn btn-primarynew pull-right btn-sm" type="submit" id="btn_cobro_individual">
                                             Agregar Cobro </button>
                                     </div>
                                 </div>
