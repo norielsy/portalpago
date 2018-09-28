@@ -194,7 +194,7 @@ class HomeController extends Controller
         } else {
             return redirect('/')->withErrors([
                 'error_login' => 'El Rut ingresado no se encuentra registrado. Regístrate, por favor.
-',
+                ',
             ]);
         }
     }
@@ -232,7 +232,7 @@ class HomeController extends Controller
             ]);
         }
         Usuarios::where('idUsuarios', Session::get('id'))
-            ->update(['passwordp' => Hash::make($nuevo_passowrd)]);
+        ->update(['passwordp' => Hash::make($nuevo_passowrd)]);
 
         Session::flash('ok', 'Se ha cambiado la contraseña correctamente');
         return redirect('/');
@@ -295,17 +295,12 @@ class HomeController extends Controller
 
     public function resultados(ConsultarCobrosRut $request)
     {
-        $rut = "";
-        if ($request->method() == "post") {
+        $rut = $request->input('rut');
 
-            $rut = $request->input('rut');
-        } else {
-            $token = $request->get("token");
-            $rut = base64_decode($token);
-        }
         $data = null;
+
         if ($rut != null) {
-            $rut = str_replace('.', '', $rut);
+            $rut = Utilidades::modificar_rut($rut);
             $data = Cobros::MisNoPagadas($rut, null, null, null, null);
             if ($data != null) {
                 $data = $data->paginate(10);
@@ -316,8 +311,6 @@ class HomeController extends Controller
 
     public function resultadosGet(Request $request)
     {
-        $rut = "";
-
         $token = $request->get("token");
         $rut = base64_decode($token);
         $data = null;
@@ -363,7 +356,7 @@ class HomeController extends Controller
                 $estado = Usuarios::activar_usuario($email);
                 if ($estado) {
                     $mensaje = ' <h1><strong>Bienvenido a <img src="http://www.portaldepagos.cl/public/images/logo_portaldepagos_verde.png">.</strong></h1> <h3>Facilitamos el día a día de quien Paga y de quien Cobra.  <br> <br>Tu cuenta fue activada con éxito.
-A partir de ahora podrás utilizar todos nuestros servicios.    </h3>               <br><br>     
+                    A partir de ahora podrás utilizar todos nuestros servicios.    </h3>               <br><br>
                     ';
                 }
             }
@@ -517,7 +510,7 @@ A partir de ahora podrás utilizar todos nuestros servicios.    </h3>           
         } else {
             return redirect('/')->withErrors([
                 'error_login' => 'El Rut ingresado no se encuentra registrado. Regístrate, por favor.
-',
+                ',
             ]);
         }
     }
