@@ -79,7 +79,7 @@
                 <table class="table table-hover listado listado-cobro-pendiente">
                     <thead>
                     <tr>
-                        {{--<th>#</th>--}}
+                        <th>#</th>
                         <th>RUT</th>
                         <th>Nombre/Empresa</th>
                         <th>Descripción</th>
@@ -115,8 +115,8 @@
                     <tbody>
                     @foreach($tabla as $fila)
                         <tr>
-                            {{--<td>{{$fila->idCobros}}</td>--}}
-                            <td>{{App\Helper\Rut::rut($fila->rut)}}</td>
+                            <td>{{$fila->idCobros}}</td>
+                            <td>{{$fila->rut}}</td>
                             <td>{{$fila->empresa}}</td>
                             <td>{{$fila->descripcion}}</td>
                             <td>{{App\Extras\Utilidades::Moneda($fila->monto)}}</td>

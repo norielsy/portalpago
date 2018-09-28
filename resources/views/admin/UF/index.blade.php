@@ -36,12 +36,8 @@
                         <div class="col-md-3">
                             <button class="btn btn-primary" type="submit"> Guardar</button>
                         </div>
-                        <!--<div class="col-md-3">
+                        <div class="col-md-3">
                             UF: ${{$comision->valor_configuracion}} / {{$uf->valor}} = {{number_format($comision->valor_configuracion / $uf->valor, 4)}}
-                        </div>-->
-                          <div class="col-md-3">
-            
-                            UF: {{$comision->valor_configuracion}} * {{$uf->valor}} = ${{number_format($comision->valor_configuracion * $uf->valor)}}
                         </div>
                     </form>
                 </div>

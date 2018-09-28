@@ -86,9 +86,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="name">Rut</label>
-                                <?php $etiquetas = empty($rut) ? 'login_fast' : ""; ?>
-                                <input type="text" placeholder="" value="{{$rut}}" name="rut" rel="popover" data-trigger="show" data-popover-content="#account_login" id="rut" class="form-control rut_input_point {{$etiquetas}}">
+                                <label for="name">Motivo de tu contacto</label>
+                                <select name="motivo" id="motivo" class="form-control">
+                                    <option value="Consulta">Consulta</option>
+                                    <option value="Solicitud">Solicitud</option>
+                                    <option value="Reclamo">Reclamo</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
                             </div>
                         </div>
 
@@ -110,16 +114,12 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                           <div class="form-group">
-                                <label for="name">Motivo de tu contacto</label>
-                                <select name="motivo" id="motivo" class="form-control">
-                                    <option value="Consulta">Consulta</option>
-                                    <option value="Solicitud">Solicitud</option>
-                                    <option value="Reclamo">Reclamo</option>
-                                    <option value="Otros">Otros</option>
-                                </select>
-                            </div>
 
+                            <div class="form-group">
+                                <label for="name">Rut</label>
+                                <?php $etiquetas = empty($rut) ? 'login_fast' : ""; ?>
+                                <input type="text" placeholder="" value="{{$rut}}" name="rut" rel="popover" data-trigger="show" data-popover-content="#account_login" id="rut" class="form-control rut_input_point {{$etiquetas}}">
+                            </div>
                             <div class="form-group">
                                 <label for="name">Nombre</label>
                                 <input type="text" placeholder="" value="{{$nombre}}" name="nombre" id="nombre" class="form-control">

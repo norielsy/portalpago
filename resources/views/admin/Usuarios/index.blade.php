@@ -67,7 +67,6 @@
                                 <th>Rut</th>
                                 <th>Empresa</th>
                                 <th>Email</th>
-                                <th>Fecha Creación</th>
                                 <th>Tipo de usuario</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
@@ -80,7 +79,6 @@
                                     <td>{{$data->rut}}</td>
                                     <td>{{$data->nombre}}</td>
                                     <td>{{$data->email}}</td>
-                                    <td>{{\Carbon\Carbon::parse($data->created_at)->format('d/m/Y')}}</td>
                                     <td>
                                         @if($data->type == "usuario")
                                                 <i class="fa fa-user usuario-cobrador"></i>

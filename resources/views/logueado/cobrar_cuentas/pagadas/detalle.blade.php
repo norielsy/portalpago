@@ -26,7 +26,7 @@
                 <table class="table listado-deudas table-hover top50">
                     <thead>
                     <tr>
-                        {{--<th> # </th>--}}
+                        <th> # </th>
                         <th> Empresa </th>
                         <th> Descripción </th>
                         <th>Rut</th>
@@ -45,7 +45,7 @@
                     <tbody>
                     @foreach($detalles as $detalle)
                         <tr>
-                            {{--<td>{{$detalle->idnominasdetalle}}</td>--}}
+                            <td>{{$detalle->idnominasdetalle}}</td>
                             <td>{{$detalle->nombre}}</td>
                             <td>{{$detalle->descripcion}}</td>
                             <td>{{$detalle->rut}}</td>

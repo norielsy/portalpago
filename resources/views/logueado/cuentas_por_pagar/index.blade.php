@@ -20,7 +20,7 @@
                     <table class="table table-hover table-responsive table-condensed listado listado-pendientes">
                         <thead>
                         <tr>
-                            {{--<th> #</th>--}}
+                            <th> #</th>
                             <th> Rut</th>
                             <th> Nombre/Empresa</th>
                             <th> Monto ($)</th>
@@ -30,8 +30,8 @@
                         <tbody>
                         @foreach($nopagadas as $nopagada)
                             <tr>
-                                {{--<td>{{$nopagada->idCobros}}</td>--}}
-                                <td>{{App\Helper\Rut::rut($nopagada->cobrador->rut)}}</td>
+                                <td>{{$nopagada->idCobros}}</td>
+                                <td>{{$nopagada->cobrador->rut}}</td>
                                 <td>{{$nopagada->cobrador->nombre}}</td>
                                 <td>{{App\Extras\Utilidades::Moneda($nopagada->monto)}}</td>
                                 <td>{{App\Extras\Utilidades::ImprimirFecha($nopagada->fecha_vencimiento)}}</td>
@@ -52,7 +52,7 @@
                     <table class="table table-hover table-responsive table-condensed listado listado-pendientes">
                         <thead>
                         <tr>
-                            {{--<th> #</th>--}}
+                            <th> #</th>
                             <th> Rut</th>
                             <th> Nombre/Empresa</th>
                             <th> Monto ($)</th>
@@ -62,8 +62,8 @@
                         <tbody>
                         @foreach($pagadas as $pagada)
                             <tr>
-                                {{--<td>{{$pagada->idCobros}}</td>--}}
-                                <td>{{App\Helper\Rut::rut($pagada->cobrador->rut)}}</td>
+                                <td>{{$pagada->idCobros}}</td>
+                                <td>{{$pagada->cobrador->rut}}</td>
                                 <td>{{$pagada->cobrador->nombre}}</td>
                                 <td>{{App\Extras\Utilidades::Moneda($pagada->monto)}}</td>
                                 <td>{{App\Extras\Utilidades::ImprimirFecha($pagada->fecha_vencimiento)}}</td>

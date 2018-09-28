@@ -102,7 +102,7 @@
                                         </td>
                                         <td>
                                             <a href="javascript:;" attr-id="{{$fila->idCobros}}" attr-type="{{$fila->tipo}}" class="detalle_item_pagadas">
-                                                <i class="icono-verde fa fa-plus-square"></i>
+                                                <i class="icono-verde fa fa-plus-square "></i>
                                             </a>
                                         </td>
                                         <td>

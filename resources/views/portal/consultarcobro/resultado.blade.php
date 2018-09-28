@@ -35,6 +35,7 @@
             <table class="table listado-deudas table-hover">
                 <thead>
                 <tr>
+                    <th> #</th>
                     <th>Nombre/Empresa</th>
                     <th>Descripción</th>
                     <th class="text-right">Monto ($)
@@ -61,6 +62,7 @@
                 @if(count($data) > 0)
                     @foreach($data as $fila)
                         <tr>
+                            <td>{{$fila->idCobros}}</td>
                             <td>{{$fila->empresa}}</td>
                             <td>{{$fila->descripcion}}</td>
                             <td class="text-right"> xx.xxx</td>
@@ -90,7 +92,7 @@
                 <div class="col-md-12">
                     <div class="text-center feature-head wow fadeInDown">
                         <h3 class="">
-                            ¿Quieres más detalles de estos cobros? <a href="registro" class="btn btn-registro">
+                            ¿Aún no utilizas Portal de Pagos? <a href="registro" class="btn btn-registro">
                                 Regístrate ahora
                             </a>
                         </h3>

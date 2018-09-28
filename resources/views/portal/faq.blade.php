@@ -93,7 +93,7 @@
 
 
                                 </ul>
-                                <p>Conozca más en las secciones  <a href="cuentas-pagar" class="btn btn-primarynew btn-sm">Quiero Pagar</a>   y <a href="cuentas-cobrar"  class="btn btn-primarynew btn-sm">Quiero Cobrar</a> </p>
+                                <p>Conozca más en las secciones  <a href="cuentas-pagar" class="btn btn-primarynew btn-sm">“Quiero Pagar”</a>   y <a href="cuentas-cobrar"  class="btn btn-primarynew btn-sm">“Quiero Cobrar”.</a> </p>
 
                             </div>
                         </div>
@@ -131,7 +131,7 @@
 
                         <div id="collapseFour" class="panel-collapse collapse">
                             <div class="panel-body panel-faq">
-                                <p>Conozca todos las características de nuestros servicios, consultando,  según corresponda, las siguientes secciones: <br> <a href="cuentas-pagar" class="btn btn-primarynew btn-sm">Quiero Pagar</a>    <a href="cuentas-cobrar" class="btn btn-primarynew btn-sm">Quiero Cobrar</a> </p>
+                                <p>Conozca todos las características de nuestros servicios, consultando,  según corresponda, las siguientes secciones: <br> <a href="cuentas-pagar" class="btn btn-primarynew btn-sm">“Quiero Pagar”</a>    <a href="cuentas-cobrar" class="btn btn-primarynew btn-sm">“Quiero Cobrar”.</a> </p>
 
 
                             </div>
@@ -150,21 +150,20 @@
                         <div id="collapseFive" class="panel-collapse collapse">
                             <div class="panel-body panel-faq">
                                 <p> No hay costos</strong> para quien ocupa nuestra solución <strong>para pagar.</strong> </p>
-                                <p>Quien cobra, paga <strong>{{$comision}} UF o CLP$ {{number_format($comision * $uf)}} </strong> por cada cobro ingresado en el mes (IVA incluido).</p>
-                                <p><strong><i class="fa fa-arrow-right"></i> Si eres Persona Natural, no pagas por ingresar el cobro*</strong></p>
-                                <p><strong><i class="fa fa-arrow-right"></i> Si eres Persona Jurídica, tienes 3 meses de uso grátis*</strong></p>
+                                <p>Quien cobra, paga <strong>0,01142 UF o CLP$ 300 </strong>(aproximadamente) por cada cliente (RUT) cobrado en el mes (IVA incluido).</p>
+                                <p><strong>¡¡¡Cobra 10 clientes en el mes gratis!!!*</strong></p>
                                 <p><small>*Promoción por tiempo limitado.</small></p>
 
-                                <p><strong>Entienda cómo funciona:</strong></p>
-                                <div class="table-responsive">
-                                <table class="table table-bordered table_n">
+                                <p><small>Entienda cómo funciona:</small></p>
+
+                                <table class="table table-bordered">
                                       <thead>
                                         <tr>
                                           <th>
                                             Mes
                                           </th>
                                           <th>
-                                            Cantidad de Cobros Ingresados
+                                            Número de Clientes Cobrados
                                           </th>
                                           <th>
                                             Costo Unitario ($)
@@ -184,10 +183,10 @@
                                             10
                                           </td>
                                           <td>
-                                            400
+                                            300
                                           </td>
                                           <td>
-                                            4.000
+                                            3.000
                                           </td>
 
                                         </tr>
@@ -200,10 +199,10 @@
                                             15
                                           </td>
                                           <td>
-                                            400
+                                            300
                                           </td>
                                           <td>
-                                            6.000
+                                            4.500
                                           </td>
 
                                         </tr>
@@ -216,10 +215,10 @@
                                             40
                                           </td>
                                           <td>
-                                            400
+                                            300
                                           </td>
                                           <td>
-                                            16.000
+                                            12.000
                                           </td>
 
                                         </tr>
@@ -227,9 +226,12 @@
 
                                       </tbody>
                                     </table>
-                                    </div>
 
 
+                                    <p><strong>Recuerda:</strong></p>
+                                    <br>
+                                    <p>Cobramos por clientes cobrados  y no por cantidad de cobros realizados a cada cliente, siempre considerando el periodo de 1 mes. </p>
+                                    <p>Esto quiere decir que  puedes cobrar 10 deudas de un mismo cliente, en el período 1 mes, y sólo pagas 0,01142 UF o CLP$ 300 (aproximadamente).</p>
 
                             </div>
                         </div>

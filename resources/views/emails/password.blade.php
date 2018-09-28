@@ -22,7 +22,7 @@
 
                         <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">Conforme solicitado, te enviamos este link para que definas una nueva clave para nuestros servicios: </p>
 
-                            {{ asset('restablecer?exp'.$expira.'&f='.$email) }}
+                            {{ url('restablecer?exp'.$expira.'&f='.$email) }}
 
                          <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">(si no puedes accederlo directamente, cópialo y pégalo en tu navegador)  </p>
                          <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">¡Muchas gracias! </p>

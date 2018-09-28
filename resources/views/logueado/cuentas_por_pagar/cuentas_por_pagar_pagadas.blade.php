@@ -64,7 +64,7 @@
                         <table class="table listado listado-pagadas table-hover">
                             <thead>
                             <tr>
-                                {{--<th> #</th>--}}
+                                <th> #</th>
                                 <th style="min-width:100px;">Rut</th>
                                 <th>Nombre/Empresa</th>
                                 <th>Descripción</th>
@@ -97,29 +97,25 @@
                             <tbody>
                             @foreach($pagadas as $fila)
                                 <tr>
-                                    {{--<td>{{$fila->idCobros}}</td>--}}
-                                    <td>{{App\Helper\Rut::rut($fila->rut_cobrador)}}</td>
+                                    <td>{{$fila->idCobros}}</td>
+                                    <td>{{$fila->rut}}</td>
                                     <td>{{$fila->empresa}}</td>
                                     <td>{{$fila->descripcion}}</td>
                                     <td>{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_vencimiento)}}</td>
                                     <td>{{App\Extras\Utilidades::ImprimirFecha($fila->fecha_pago)}}</td>
                                     <td>
                                         @if(empty($fila->forma_pago))
-                                            TEF (Conc.Auto)
+                                            Transferencia Sistema
                                         @else
                                             {{@$fila->forma_pago}}
                                         @endif
                                     </td>
                                     <td>{{App\Extras\Utilidades::Moneda($fila->monto)}}</td>
                                     <td>
-                                        @if(!empty($ff[$fila->idCobros]))
-                                            <a href="{{asset($ff[$fila->idCobros])}}" target="_blank"
-                                               class="btn btn-success btn-sm">Archivo adjunto</a>
+                                        @if($fila->adjunto != 0 && $fila->adjunto != null)
+                                            <a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"
+                                               class="btn btn-success btn-sm">Descargar</a>
                                         @endif
-                                        {{--@if($fila->adjunto != 0 && $fila->adjunto != null)--}}
-                                            {{--<a href="{{asset("/d?download=".Crypt::encrypt("upload/individual/".$fila->adjunto))}}"--}}
-                                               {{--class="btn btn-success btn-sm">Descargar</a>--}}
-                                        {{--@endif--}}
                                     </td>
                                 </tr>
                             @endforeach
