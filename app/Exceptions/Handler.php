@@ -39,18 +39,16 @@ class Handler extends ExceptionHandler {
 		if($this->isHttpException($e)){
 			switch ($e->getStatusCode()) {
 				case '404':
-					//\Log::error($e);
-					return \Response::view('portal/error404');
-					break;
+				return \Response::view('portal/error404');
+				break;
 
 				case '500':
-					//\Log::error($exception);
-					return \Response::view('portal/error500');
-					break;
+				return \Response::view('portal/error500');
+				break;
 
 				default:
-					return $this->renderHttpException($e);
-					break;
+				return \Response::view('portal/error');
+				break;
 			}
 		}
 		else

@@ -10,8 +10,8 @@ Error 404 | Portal de Pagos
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-sm-12">
-                <h1 class="top10">
-                    Error 500
+                <h1 class="top10 white">
+                    Error 404
                 </h1>
             </div>
 
@@ -23,8 +23,8 @@ Error 404 | Portal de Pagos
     <div class="row">
         <div class="col-md-12">
             <div class="text-center feature-head wow fadeInDown animated" style="visibility: visible; animation-name: fadeInDown;" data-wow-animation-name="fadeInDown">
-                <h1 class="">Error 500</h1>
-                <strong>Ups, esto no debería pasar</strong>
+                <h1 class="">Lo sentimos, ha ocurrido un error</h1>
+                <strong>Si continua, por favor contactenos a traves de atencion@portaldepagos.cl</strong>
                 <br>
                 <br>
                 <table style="width:100%;">

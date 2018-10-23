@@ -152,12 +152,19 @@ class PagarController extends Controller
             'rut_empresa' => Session::get('rut'),
             'pagado' => 0,
             'eliminado' => 0
-        ])->get()->take(10);
+        ])
+        ->orderBy('fecha_vencimiento')
+        ->get()
+        ->take(10);
+
         $pagadas = Cobros::where([
             'rut_empresa' => Session::get('rut'),
             'pagado' => 1,
             'eliminado' => 0
-        ])->get()->take(10);
+        ])
+        ->orderBy('fecha_vencimiento')
+        ->get()
+        ->take(10);
 
         return view('logueado.cuentas_por_pagar.index', [
             'pagadas' => $pagadas,

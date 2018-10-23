@@ -68,7 +68,7 @@
                                             <div class="col-md-6 col-xs-12">
                                                 <div class="form-group hg">
                                                     <label class="control-label" for="fecha_vencimiento">Fecha Vencimiento</label>
-                                                    {!! Form::text('fecha_vencimiento',null,['class' => 'form-control datepicker_all','placeholder' => '20/10/2015']) !!}
+                                                    {!! Form::text('fecha_vencimiento',null,['class' => 'form-control datepicker_all','placeholder' => '20/10/2015', 'autocomplete' => "off"]) !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@
                                     <div class="col-xs-12 clearfix">
                                         <br>
                                         <button class="btn btn-primarynew pull-right btn-sm" type="submit" id="btn_cobro_individual">
-                                            Agregar Cobro </button>
+                                        Agregar Cobro </button>
                                     </div>
                                 </div>
                             </div>

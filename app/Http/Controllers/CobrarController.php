@@ -316,12 +316,12 @@ class CobrarController extends Controller
         }
 
         if((int) $tabla_cobros->monto <= 0){
-            return Redirect::back()->withErrors(['El monto debe ser mayor a 0']);
+            return Redirect::back()->withErrors(['El monto debe ser mayor a 0.']);
         }else {
             $date = Carbon::now();
 
             if($date > $tabla_cobros->fecha_vencimiento){
-                return Redirect::back()->withErrors(['Fecha de vencimiento invalida']);
+                return Redirect::back()->withErrors(['La Fecha de vencimiento debe ser mayor a la fecha de hoy.']);
             }else{
                 $tabla_cobros->save();
 
@@ -356,21 +356,22 @@ class CobrarController extends Controller
         $monto = Extras\Utilidades::insert_moneda($request->get('monto'));
         $fecha_vencimiento = Extras\Utilidades::formatoFechaDB($request->get('fecha_vencimiento'));
         $descripcion = $request->get('descripcion');
+        $datos_deudor = Usuarios::where("rut", $rut_empresa)->first();
 
         if((int) $request->get('monto') <= 0){
-            return Redirect::back()->withErrors(['El monto debe ser mayor a 0']);
+            return Redirect::back()->withErrors(['El monto debe ser mayor a 0.']);
         }else {
             $date = Carbon::now();
 
             if($date > $fecha_vencimiento){
-                return Redirect::back()->withErrors(['Fecha de vencimiento invalida']);
+                return Redirect::back()->withErrors(['La Fecha de vencimiento debe ser mayor a la fecha de hoy.']);
             }else{
 
                 $id_usuario = (Session::get('idvista_cobrador') == 0) ? Session::get('id') : Session::get('rut_padre');
 
                 $rs = Cobros::editarCobrosPuntuales($idcobro, $id_usuario, $empresa, $rut_empresa, $descripcion, $fecha_vencimiento, $email, $monto);
 
-                Extras\SendEmail::aviso_cobro_editado($request->input('email'), Session::get('nombre'), Session::get('id'), $fecha_vencimiento, $monto, $rut_empresa);
+                Extras\SendEmail::aviso_cobro_editado($request->input('email'), Session::get('nombre'), Session::get('id'), $fecha_vencimiento, $monto, $rut_empresa, $empresa);
 
                 Session::flash('ok', 'Cobro editado correctamente');
 
@@ -382,7 +383,7 @@ class CobrarController extends Controller
                         if ($rut_traspaso != null && $email_traspaso != null) {
                             $rs1 = Cobros::editar_traspaso_detalle($idcobro, $rut_traspaso, $email_traspaso);
                             if ($rs1) {
-                                Session::flash('ok', 'Cobro editado correctamente');
+                                Session::flash('ok', 'Cobro editado correctamente.');
                             }
                         } else {
                             //return Redirect::back()->withErrors(['Error' => 'Falta ingresar datos en el traspaso']);
@@ -417,23 +418,23 @@ class CobrarController extends Controller
         $email_traspaso = $request->get('email_traspaso');
 
         if ($rs) {
-            Session::flash('ok', 'Nomina editado correctamente');
+            Session::flash('ok', 'Nomina editado correctamente.');
         }
         if ($rut_traspaso != $rut) {
             if ($rut_traspaso != Session::get('rut')) {
                 if (strlen($rut_traspaso) > 0 && strlen($email_traspaso) > 0) {
                     $rs1 = NominasDetalles::editar_traspaso_detalle($id_nomina, $rut_traspaso, $email_traspaso);
                     if ($rs1) {
-                        Session::flash('ok', 'Nomina editado correctamente');
+                        Session::flash('ok', 'Nomina editado correctamente.');
                     }
                 } else {
                     //return Redirect::back()->withErrors(['Error' => 'Falta ingresar datos en el traspaso']);
                 }
             } else {
-                return Redirect::back()->withErrors(['Error' => 'No puedes agregar el traspaso a ti mismo']);
+                return Redirect::back()->withErrors(['Error' => 'No puedes agregar el traspaso a ti mismo.']);
             }
         } else {
-            return Redirect::back()->withErrors(['Error' => 'El rut ya se encuentra registrado']);
+            return Redirect::back()->withErrors(['Error' => 'El rut ya se encuentra registrado.']);
         }
         return Redirect::back();
     }
@@ -541,14 +542,14 @@ class CobrarController extends Controller
 
             if((int) $monto <= 0){
                 $errores = true;
-                $mensajes[] = "El monto debe ser mayor a 0";
+                $mensajes[] = "Los montos debe ser mayor a 0.";
             }
 
             $date = Carbon::now();
 
             if($date > $fecha_vencimiento){
                 $errores = true;
-                $mensajes[] = "La fecha debe ser mayor al dia actual";
+                $mensajes[] = "Las Fechas de vencimiento deben ser mayor a la fecha de hoy.";
             }
 
             if ($errores) {

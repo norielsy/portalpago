@@ -72,8 +72,8 @@ class SendEmail
         );
 
         $a = Mail::send('emails.email_nuevoregistro', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+            $message->from('noreply@portaldepagos.cl', 'Portal de Pagos');
+            $message->to($data['to'])->subject($data['titulo']);
         });
 
         if ($a) {
@@ -95,7 +95,7 @@ class SendEmail
         );
 
         $a = Mail::send('emails.email_bienvenida', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
+            $message->from('noreply@portaldepagos.cl', 'Portal de Pagos');
             $message->to($data['to'])->subject($data['titulo']);
         });
 
@@ -117,8 +117,8 @@ class SendEmail
         );
 
         $a = Mail::send('emails.email_datos_cambiado', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+            $message->from('noreply@portaldepagos.cl', 'Portal de pagos');
+            $message->to($data['to'])->subject($data['titulo']);
         });
 
         if ($a) {
@@ -151,8 +151,8 @@ class SendEmail
             $data['rut'] = base64_encode($rut);
         }
         $a = Mail::send('emails.email_aviso_nuevo_cobro', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+            $message->from('noreply@portaldepagos.cl', 'Portal de Pagos');
+            $message->to($data['to'])->subject( $data['titulo']);
             if (!empty($data['archivo'])) {
                 $message->attach($data['archivo']);
             }
@@ -165,30 +165,36 @@ class SendEmail
         }
     }
 
-    public static function aviso_cobro_editado($email, $session_nombre, $de, $fecha_vencimiento, $monto, $deudor)
+    public static function aviso_cobro_editado($email, $session_nombre, $de, $fecha_vencimiento, $monto, $deudor, $nombre)
     {
-        $msg = ContenidoEmail::buscar(6);
         $data = array(
             'to' => $email,
             'empresa' => $session_nombre,
-            'nombre' => $session_nombre,
-            'titulo' => "Edicion de cobro",
+            'titulo' => "Actualización de deuda",
             'fecha_vencimiento' => $fecha_vencimiento,
             'monto' => $monto,
-            'deudor' => $deudor
+            'deudor' => $deudor,
+            'nombre' => $nombre
         );
 
         $a = Mail::send('emails.email_cobro_editado', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+            $message->from('noreply@portaldepagos.cl', 'Portal de Pagos');
+            $message->to($data['to'])->subject($data['titulo']);
         });
+    }
 
-        if ($a) {
-            $d = Usuarios::buscar_usuario_por_email($email);
-            if ($d) {
-                HistorialEmail::agregar_de($msg->titulo, "...", $d->idUsuarios, "-", 6, $de);
-            }
-        }
+    public static function aviso_cambio_clave($usuario)
+    {
+        $data = array(
+            'to' => $usuario->email,
+            'nombre' => $usuario->nombre,
+            'titulo' => "Cambio de contraseña realizado"
+        );
+
+        $a = Mail::send('emails.email_cambio_clave', $data, function ($message) use ($data) {
+            $message->from('noreply@portaldepagos.cl', 'Portal de Pagos');
+            $message->to($data['to'])->subject($data['titulo']);
+        });
     }
 
     public static function nuevo_archivo_adjunto($email, $empresa, $de, $archivo = null)
@@ -201,8 +207,8 @@ class SendEmail
             'archivo' => $archivo
         );
         $a = Mail::send('emails.email_nuevo_archivo', $data, function ($message) use ($data) {
-            $message->from('noreply@portaldepagos.cl', $data['titulo']);
-            $message->to($data['to'])->subject('Portal de pagos');
+            $message->from('noreply@portaldepagos.cl', 'Portal de pagos');
+            $message->to($data['to'])->subject($data['titulo']);
             if (!empty($data['archivo'])) {
                 $message->attach($data['archivo']);
             }
@@ -229,8 +235,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_vencimiento_deudor', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -258,8 +264,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_vencimiento_deudor', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -287,8 +293,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_vencimiento_deudor', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -316,8 +322,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_vencimiento_deudor', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -344,8 +350,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_cobrador', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -372,8 +378,8 @@ class SendEmail
                 'titulo' => $msg->titulo
             );
             $a = Mail::send('emails.email_aviso_cobrador', $data, function ($message) use ($data) {
-                $message->from('noreply@portaldepagos.cl', $data['titulo'])->bcc($data['emails']);
-                $message->to($data['to'])->subject('Portal de pagos');
+                $message->from('noreply@portaldepagos.cl', 'Portal de pagos')->bcc($data['emails']);
+                $message->to($data['to'])->subject($data['titulo']);
             });
             if ($a) {
                 foreach ($emails as $data) {
@@ -400,8 +406,8 @@ class SendEmail
             'mensaje' => $mensaje
         );
         $a = Mail::send('emails.email_contacto', $data, function ($message) use ($data) {
-            $message->from('atencion@portaldepagos.cl', $data['titulo']);
-            $message->to('atencion@portaldepagos.cl')->subject('Portal de pagos');
+            $message->from('atencion@portaldepagos.cl', 'Portal de pagos');
+            $message->to('atencion@portaldepagos.cl')->subject($data['titulo']);
         });
         if ($a) {
             return true;

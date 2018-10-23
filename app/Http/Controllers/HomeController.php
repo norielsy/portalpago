@@ -87,6 +87,8 @@ class HomeController extends Controller
             'idrubros' => $idrubros
         ));*/
 
+        Session::flash('ok', 'Datos actualizados correctamente');
+
         if ($rs) {
             Session::put('nombre', $nombre);
             Session::put('mi_nombre', $nombre);
@@ -100,14 +102,17 @@ class HomeController extends Controller
             Session::put('IDRegion', $IDRegion);
             //Session::put('razon_social', $razon_social);
 
+            SendEmail::edicion_cuenta($request->input('email'), Session::get('nombre'));
+
+            $this->editar_cuenta_bancaria($request);
+
+            if (!empty(Session::get('r'))) {
+                return redirect(Session::get('r'))->with('ok', 'Datos actualizados correctamente');
+            }
+
             Session::flash('ok', 'Datos actualizados correctamente');
 
-            SendEmail::edicion_cuenta($request->input('email'), Session::get('nombre'));
-            $this->editar_cuenta_bancaria($request);
-            if (!empty(Session::get('r'))) {
-                return redirect(Session::get('r'));
-            }
-            return Redirect::back();
+            return Redirect::back()->with('ok', 'Datos actualizados correctamente');
         } else {
             return Redirect::back()->withErrors([
                 'Error' => 'Hubo un error al modificar los datos, por favor intente nuevamente',
@@ -221,20 +226,22 @@ class HomeController extends Controller
         $nuevo_passowrd = $request->get('nueva_password');
         if (strlen(trim($nuevo_passowrd)) < 6) {
             return redirect('/')->withErrors([
-                'Contraseña' => 'La contraseña debe tener mínimo de 7 caracteres',
+                'Contraseña' => 'La contraseña debe tener mínimo de 7 caracteres.',
             ]);
         }
 
         $usuario = Usuarios::where('idUsuarios', Session::get('id'))->first();
         if ($usuario && !Hash::check($password_actual, $usuario->passwordp)) {
             return redirect('/')->withErrors([
-                'Contraseña' => 'La contraseña ingresada no coincide con la actual',
+                'Contraseña' => 'La contraseña ingresada no coincide con la actual.',
             ]);
         }
         Usuarios::where('idUsuarios', Session::get('id'))
         ->update(['passwordp' => Hash::make($nuevo_passowrd)]);
 
-        Session::flash('ok', 'Se ha cambiado la contraseña correctamente');
+        SendEmail::aviso_cambio_clave($usuario);
+
+        Session::flash('ok', 'Se ha cambiado la contraseña correctamente.');
         return redirect('/');
     }
 
@@ -378,6 +385,7 @@ class HomeController extends Controller
                 }
             }
         }
+
         $rs = DatosPagos::agregar_editar_pago(Session::get('id'), $banco, $tipo_cuenta, $nro_cuenta);
 
         if ($rs) {
@@ -385,8 +393,11 @@ class HomeController extends Controller
             Session::put('nro_cuenta', $nro_cuenta);
             Session::put('tipo_cuenta', $tipo_cuenta);
 
+            SendEmail::edicion_cuenta(Session::get('email'), Session::get('nombre'));
+
             Session::flash('ok', 'Se han actualizado los datos de pago correctamente');
         }
+
         if (empty(Session::get('r'))) {
             return Redirect::back();
         }

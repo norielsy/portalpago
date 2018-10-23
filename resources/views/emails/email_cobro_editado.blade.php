@@ -24,9 +24,8 @@
                 </tr>
                 <tr>
                     <td style="padding: 30px 35px;">
-                        <h2 style="font-size:28px; margin-bottom:20px; line-height: 1.25;">{{$deudor}}</h2>
-                        <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">Tienes una nueva cuenta por
-                        pagar: </p>
+                        <h2 style="font-size:28px; margin-bottom:20px; line-height: 1.25;">{{$nombre}}</h2>
+                        <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">Se ha actualizado su cuenta por pagar: </p>
                         <table style="width:100%; border-collapse:collapse; background:#fff; padding: 30px 35px; text-align: left;">
                             <thead>
                                 <tr>
@@ -37,7 +36,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{$nombre}}</td>
+                                    <td>{{$empresa}}</td>
                                     <td>{{$fecha_vencimiento}}</td>
                                     <td>{{$monto}}</td>
                                 </tr>
@@ -51,7 +50,7 @@
                             <tr>
                                 <td align="center">
                                     <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">
-                                        <a href="http://test01.portaldepagos.cl/cuentas-por-pagar#verpago_{{$cobro_id}}"
+                                        <a href="http://www.portaldepagos.cl/cuentas-por-pagar#verpago_{{$cobro_id}}"
                                         style="width:200px; border-radius: 4px; font-weight:bold; padding:15px 20px 15px; text-decoration:none; background:#71bc37; color:#fff; display: inline-block;">Consultar
                                     Pagos Pendiente</a>
                                 </p>
@@ -63,7 +62,7 @@
                         <tr>
                             <td align="center">
                                 <p style="font-size: 16px; font-weight:normal; margin-bottom:20px;">
-                                    <a href="http://test01.portaldepagos.cl/consultar"
+                                    <a href="http://www.portaldepagos.cl/consultar"
                                     style="width:200px; border-radius: 4px; font-weight:bold; padding:15px 20px 15px; text-decoration:none; background:#71bc37; color:#fff; display: inline-block;">Consultar
                                 Pagos Pendientes</a>
                             </p>

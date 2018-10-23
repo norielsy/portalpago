@@ -29,7 +29,7 @@ class AvisoCobradorTresDias extends Command {
      */
     public function handle()
     {
-        //SendEmail::aviso_cobrador_nuevo_vencimiento_tres_dias();
+        SendEmail::aviso_cobrador_nuevo_vencimiento_tres_dias();
     }
 
 }

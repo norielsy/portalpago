@@ -41,43 +41,29 @@ Consultar Cobros | Portal de Pagos
                             <input type="text" name="rut" id="rut_main" placeholder="Ingrese su rut"
                             class="form-control rut_input_point">
                         </div>
-                            <!--
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="text" name="" placeholder="Ingrese su rut" class="form-control">
-                        </div>
 
-                        <div class="form-group">
-                            <label>Clave</label>
-                            <input type="text" name="" placeholder="Ingrese su rut" class="form-control">
-                        </div>
+                        {!! app('captcha')->display() !!}
 
+                        <label class="checkbox">
+                            <div class="text-center">
+                                <a href="javascript:;" id="btn_recuperar_pwd"></a>
+                            </div>
+                        </label>
+                        <br>
                         <div class="form-group">
-                            <label>Confirmar clave</label>
-                            <input type="text" name="" placeholder="Ingrese su rut" class="form-control">
+                            <button type="submit" class="btn btn-lg btn-primarynew btn-block btn-consultar">
+                                Consultar
+                            </button>
                         </div>
-                    -->
-                    {!! app('captcha')->display() !!}
+                        {!! Form::close() !!}
 
-                    <label class="checkbox">
-                        <div class="text-center">
-                            <a href="javascript:;" id="btn_recuperar_pwd">¿Olvidaste tu clave?</a>
-                        </div>
-                    </label>
-                    <br>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-lg btn-primarynew btn-block btn-consultar">
-                            Consultar
-                        </button>
                     </div>
-                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- cierre form-wrapper-->
-</div>
+        <!-- cierre form-wrapper-->
+    </div>
 </section>
 <section>
     <div class="container">

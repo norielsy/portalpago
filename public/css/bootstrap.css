@@ -3928,11 +3928,11 @@ textarea.input-group-sm > .input-group-btn > .btn {
   color: #505050;
   background-color: #bbb;
   -webkit-transition: all .3s ease;
-<<<<<<< HEAD
-    transition: all .3s ease;
-=======
+  <<<<<<< HEAD
   transition: all .3s ease;
->>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
+  =======
+  transition: all .3s ease;
+  >>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
 
   /*border-color: #eeeeee #eeeeee #dddddd;*/
 }
@@ -5212,11 +5212,11 @@ a.thumbnail:focus {
 
 .progress.active .progress-bar {
   -webkit-animation: progress-bar-stripes 2s linear infinite;
-<<<<<<< HEAD
-          animation: progress-bar-stripes 2s linear infinite;
-=======
+  <<<<<<< HEAD
   animation: progress-bar-stripes 2s linear infinite;
->>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
+  =======
+  animation: progress-bar-stripes 2s linear infinite;
+  >>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
 }
 
 .progress-bar-success {
@@ -5670,28 +5670,28 @@ body.modal-open,
 
 .modal.fade .modal-dialog {
   -webkit-transform: translate(0, -25%);
-<<<<<<< HEAD
-          transform: translate(0, -25%);
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-          transition: -webkit-transform 0.3s ease-out;
-          transition: transform 0.3s ease-out;
-          transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
-=======
+  <<<<<<< HEAD
   transform: translate(0, -25%);
   -webkit-transition: -webkit-transform 0.3s ease-out;
   transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
   transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
->>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
+  =======
+  transform: translate(0, -25%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  >>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
 }
 
 .modal.in .modal-dialog {
   -webkit-transform: translate(0, 0);
-<<<<<<< HEAD
-          transform: translate(0, 0);
-=======
+  <<<<<<< HEAD
   transform: translate(0, 0);
->>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
+  =======
+  transform: translate(0, 0);
+  >>>>>>> 276002e200c14a70719a046fbde6755b10f0840a
 }
 
 .modal-dialog {

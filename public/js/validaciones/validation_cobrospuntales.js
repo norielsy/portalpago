@@ -18,50 +18,50 @@ $(function(){
         range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
         max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
         min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
-    });
+        });
 
-    $.validator.addMethod("rut", validarRut, "El rut ingresado no es válido, Ej: 12.345.678-9");
+    $.validator.addMethod("rut", validarRut, "El rut ingresado no es válido");
     $.validator.addMethod("validarFecha",validarFecha,"Favor utiliza “Fecha de Vencimiento” con formato “DD/MM/AAAA” (Día / Mes / Año)");
     $('#form_cobrospuntuales_main').validate({
         rules: {
             rut_empresa: {
                 rut: true
-            },
-            empresa: {
-                minlength: 3,
-                maxlength: 100,
-                required: true
-            },
-            email: {
-                required: true,
-                email: true
-            },
-            monto: {
-                minlength: 1,
-                required: true
+                },
+                empresa: {
+                    minlength: 3,
+                    maxlength: 100,
+                    required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                        },
+                        monto: {
+                            minlength: 1,
+                            required: true
                 //number: true
-            },
-            fecha_vencimiento: {
-                validarFecha: true,
-            }
+                },
+                fecha_vencimiento: {
+                    validarFecha: true,
+                }
 
-        },
-        highlight: function(element) {
-            $(element).closest('.form-group').addClass('has-error');
-        },
-        unhighlight: function(element) {
-            $(element).closest('.form-group').removeClass('has-error');
-        },
-        errorElement: 'span',
-        errorClass: 'help-block has-error',
-        errorPlacement: function(error, element) {
-            if(element.parent('.input-group').length) {
-                error.insertAfter(element.parent());
-            } else {
-                error.insertAfter(element);
-            }
-        }
-    });
+                },
+                highlight: function(element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function(element) {
+                        $(element).closest('.form-group').removeClass('has-error');
+                        },
+                        errorElement: 'span',
+                        errorClass: 'help-block has-error',
+                        errorPlacement: function(error, element) {
+                            if(element.parent('.input-group').length) {
+                                error.insertAfter(element.parent());
+                                } else {
+                                    error.insertAfter(element);
+                                }
+                            }
+                            });
 
     $("#form_cobrospuntuales_main").submit(function(){
         var bol_ = $("#form_cobrospuntuales_main").valid();
@@ -69,7 +69,7 @@ $(function(){
         if(bol_) {
             $(".loading2").show();
         }
-    });
+        });
 
-});
+    });
 
